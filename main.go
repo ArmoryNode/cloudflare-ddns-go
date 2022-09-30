@@ -11,7 +11,7 @@ import (
 	"regexp"
 	"time"
 
-	cli "github.com/armorynode/cloudflare-ddns/lib"
+	cli "github.com/armorynode/cloudflare-ddns/util"
 )
 
 // ASCII control characters
