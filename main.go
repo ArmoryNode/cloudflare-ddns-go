@@ -38,15 +38,15 @@ func main() {
 	// Channel used for checking the cloudflare configuration
 	verified := make(chan bool)
 
-	go cli.DisplaySpinner("Verifying cloudflare API key", quit)
-	go verifyApiKey(verified, quit, config)
+	go cli.DisplaySpinner("Verifying cloudflare API token", quit)
+	go verifyApiToken(verified, quit, config)
 
 	if <-verified {
 		fmt.Print(CLEAR_LINE)
-		fmt.Println("[✓] API key verified")
+		fmt.Println("[✓] API token verified")
 	} else {
 		fmt.Print(CLEAR_LINE)
-		fmt.Println("[✕] Failed to verify API key")
+		fmt.Println("[✕] Failed to verify API token")
 		return
 	}
 
@@ -86,7 +86,7 @@ func main() {
 }
 
 type CloudflareConfiguration struct {
-	ApiKey                  string `json:"apiKey"`
+	ApiToken                string `json:"apiToken"`
 	ZoneIdentifier          string `json:"zoneIdentifier"`
 	RecordIdentifier        string `json:"recordIdentifier"`
 	UpdateIntervalInMinutes int    `json:"updateIntervalInMinutes"`
@@ -113,12 +113,12 @@ type CloudflareVerificationResponse struct {
 	} `json:"result"`
 }
 
-func verifyApiKey(verified chan bool, quit chan bool, config CloudflareConfiguration) {
+func verifyApiToken(verified chan bool, quit chan bool, config CloudflareConfiguration) {
 	client := &http.Client{
 		CheckRedirect: http.DefaultClient.CheckRedirect,
 	}
 
-	token := fmt.Sprintf("Bearer %s", config.ApiKey)
+	token := fmt.Sprintf("Bearer %s", config.ApiToken)
 	req, err := http.NewRequest("GET", "https://api.cloudflare.com/client/v4/user/tokens/verify", nil)
 	req.Header.Add("Authorization", token)
 
@@ -153,7 +153,7 @@ func verifyZone(verified chan bool, quit chan bool, config CloudflareConfigurati
 	}
 
 	url := fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s", config.ZoneIdentifier)
-	token := fmt.Sprintf("Bearer %s", config.ApiKey)
+	token := fmt.Sprintf("Bearer %s", config.ApiToken)
 
 	req, err := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", token)
@@ -212,7 +212,7 @@ func updateRecord(config CloudflareConfiguration) {
 	}
 
 	url := fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/dns_records/%s", config.ZoneIdentifier, config.RecordIdentifier)
-	token := fmt.Sprintf("Bearer %s", config.ApiKey)
+	token := fmt.Sprintf("Bearer %s", config.ApiToken)
 
 	data, err := json.Marshal(map[string]interface{}{
 		"content": ipv4,

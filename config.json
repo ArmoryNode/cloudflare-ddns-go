@@ -1,5 +1,5 @@
 {
-    "apiKey": "{ your API key from Cloudflare }",
+    "apiToken": "{ your API token from Cloudflare }",
     "zoneIdentifier": "{ your zone (domain) identifier from Cloudflare }",
     "recordIdentifier": "{ your DNS record Identifier from Cloudflare }",
     "updateIntervalInMinutes": 1
