@@ -8,7 +8,7 @@ I mainly wrote this app as a way to learn how to write Go. It's taking some gett
 * Go version 1.19 or above.
 * A Cloudflare API key with `DNS:Edit` permission.
 * Your zone id for your domain.
-* Your DNS record identifier.
+* Your DNS record identifier. ([see the "Getting your DNS record identifier" section for instructions on how to get this.](https://github.com/ArmoryNode/cloudflare-ddns#getting-your-dns-record-identifier))
 
 # Build Instructions
 * Add information to the `config.json` file.
