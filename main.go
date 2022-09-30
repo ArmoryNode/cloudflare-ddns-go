@@ -62,6 +62,18 @@ func main() {
 		return
 	}
 
+	go cli.DisplaySpinner("Verifying DNS record", quit)
+	go verifyDnsRecord(verified, quit, config)
+
+	if <-verified {
+		fmt.Print(CLEAR_LINE)
+		fmt.Println("[✓] DNS record verified")
+	} else {
+		fmt.Print(CLEAR_LINE)
+		fmt.Println("[✕] Failed to verify DNS record")
+		return
+	}
+
 	// We won't be using these channels anymore
 	close(verified)
 	close(quit)
@@ -148,11 +160,43 @@ func verifyApiToken(verified chan bool, quit chan bool, config CloudflareConfigu
 }
 
 func verifyZone(verified chan bool, quit chan bool, config CloudflareConfiguration) {
-	client := &http.Client{
-		CheckRedirect: http.DefaultClient.CheckRedirect,
-	}
+	client := &http.Client{}
 
 	url := fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s", config.ZoneIdentifier)
+	token := fmt.Sprintf("Bearer %s", config.ApiToken)
+
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Add("Authorization", token)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer resp.Body.Close()
+
+	var response CloudflareVerificationResponse
+
+	json.NewDecoder(resp.Body).Decode(&response)
+
+	quit <- true
+
+	if response.Success {
+		verified <- true
+	} else {
+		verified <- false
+	}
+}
+
+func verifyDnsRecord(verified chan bool, quit chan bool, config CloudflareConfiguration) {
+	client := &http.Client{}
+
+	url := fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/dns_records/%s", config.ZoneIdentifier, config.RecordIdentifier)
 	token := fmt.Sprintf("Bearer %s", config.ApiToken)
 
 	req, err := http.NewRequest("GET", url, nil)
