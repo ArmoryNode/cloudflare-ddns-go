@@ -93,7 +93,7 @@ type CloudflareConfiguration struct {
 }
 
 func getCloudflareConfiguration(config *CloudflareConfiguration) {
-	jsonFile, err := os.Open("../config.json")
+	jsonFile, err := os.Open("./config.json")
 	if err != nil {
 		log.Fatalln(err)
 	}
