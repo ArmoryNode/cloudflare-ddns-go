@@ -1,0 +1,6 @@
+{
+    "apiKey": "{ your API key from CloudFlare }",
+    "zoneIdentifier": "{ your zone (domain) identifier from CloudFlare }",
+    "recordIdentifier": "{ your DNS record Identifier from CloudFlare }",
+    "updateIntervalInMinutes": 1
+}
