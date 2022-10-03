@@ -1,6 +1,6 @@
 {
-    "apiToken": "{ your API token from Cloudflare }",
-    "zoneIdentifier": "{ your zone (domain) identifier from Cloudflare }",
-    "recordIdentifier": "{ your DNS record Identifier from Cloudflare }",
+    "apiToken": "2QPXqDaC4DfX-7gwsQ00uaqRv9oSKNInopmavEg0",
+    "zoneIdentifier": "066d2c9b2494cd669b4d0b7a63599e58",
+    "recordIdentifier": "513a1b7fadd91c521788f8e4a640624c",
     "updateIntervalInMinutes": 1
 }
