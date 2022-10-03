@@ -1,3 +1,3 @@
-module github.com/armorynode/cloudflare-ddns
+module github.com/ArmoryNode/cloudflare-ddns
 
 go 1.19

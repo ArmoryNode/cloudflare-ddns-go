@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/armorynode/cloudflare-ddns/cli"
+	"github.com/ArmoryNode/cloudflare-ddns/cli"
 )
 
 type CloudflareClient struct {

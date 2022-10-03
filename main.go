@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/armorynode/cloudflare-ddns/cli"
-	"github.com/armorynode/cloudflare-ddns/cloudflare"
+	"github.com/ArmoryNode/cloudflare-ddns/cli"
+	"github.com/ArmoryNode/cloudflare-ddns/cloudflare"
 )
 
 const version = "1.0.0"
