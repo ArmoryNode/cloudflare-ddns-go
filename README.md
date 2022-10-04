@@ -11,19 +11,32 @@ I mainly wrote this app as a way to learn how to write Go. It's taking some gett
 * Your DNS record identifier. ([see the "Getting your DNS record identifier" section for instructions on how to get this.](https://github.com/ArmoryNode/cloudflare-ddns#getting-your-dns-record-identifier))
 
 # Build Instructions
-## Go
+### Go
 * Open a terminal and run `go build` at the root of the project.
 * Then run `./cloudflare-ddns` (`.\cloudflare-ddns` in Windows).
 * You'll need to pass these parameters
 ```bash
-  ./cloudflare-ddns \ 
-    -apiToken={your cloudflare API token} \              # required
-    -zoneIdentifier={your zone (domain) idenfiier} \     # required
-    -dnsRecordIdentifier={your DNS record identifier} \  # required
-    -updateInterval={the interval to update the record}  # optional
+./cloudflare-ddns \ 
+ -apiToken='{your cloudflare API token}' \              # required
+ -zoneIdentifier='{your zone (domain) idenfiier}' \     # required
+ -dnsRecordIdentifier='{your DNS record identifier}' \  # required
+ -updateInterval='{the interval to update in minutes}'  # optional
 ```
+---
+### Docker
+* Open a terminal and run `docker build . -t armorynode/cloudflare-ddns:latest`
+* Then run this in the terminal
+```bash
+docker run -it \           
+ -e APITOKEN='{your API token}' \                          # required
+ -e ZONEIDENTIFIER='{your zone identifier}' \              # required
+ -e DNSRECORDIDENTIFIER='{your DNS record identifier}' \   # required
+ -e UPDATEINTERVAL='{the interval to update in minutes}' \ # optional
+ armorynode/cloudflare-ddns:latest
+```
+(If you are using Docker Desktop, after running `docker build` you can run the image under the "Images" menu item. You'll need to open the "Optional settings" dropdown and add each environment variable)
 
-Once the program verifies your API key and Zone/DNS record identifiers, it will update the DNS record at the specified interval.
+Once the program verifies your API key and Zone/DNS record identifiers, it will run and update the DNS record at the specified interval.
 
 # Getting your DNS record identifier
 Cloudflare currently does not have an easy way to view the ids for your DNS records. This is the least painful way to get it I've found.
