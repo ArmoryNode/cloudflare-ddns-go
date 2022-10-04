@@ -11,9 +11,17 @@ I mainly wrote this app as a way to learn how to write Go. It's taking some gett
 * Your DNS record identifier. ([see the "Getting your DNS record identifier" section for instructions on how to get this.](https://github.com/ArmoryNode/cloudflare-ddns#getting-your-dns-record-identifier))
 
 # Build Instructions
-* Add information to the `config.json` file.
-* Open a terminal at the root of the project and run `go build`.
-* Then run `./cloudflare-ddns`.
+## Go
+* Open a terminal and run `go build` at the root of the project.
+* Then run `./cloudflare-ddns` (`.\cloudflare-ddns` in Windows).
+* You'll need to pass these parameters
+```bash
+  ./cloudflare-ddns \ 
+    -apiToken={your cloudflare API token} \              # required
+    -zoneIdentifier={your zone (domain) idenfiier} \     # required
+    -dnsRecordIdentifier={your DNS record identifier} \  # required
+    -updateInterval={the interval to update the record}  # optional
+```
 
 Once the program verifies your API key and Zone/DNS record identifiers, it will update the DNS record at the specified interval.
 
