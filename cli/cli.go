@@ -9,6 +9,8 @@ import (
 const UP_LINE = "\033[A"
 const HIDE_CURSOR = "\033[?25l"
 const CLEAR_LINE = "\x1b[2K"
+const CLEAR_SCREEN = "\033[2J"
+const MOVE_CURSOR_HOME = "\033[H"
 
 const COLOR_RESET = "\033[0m"
 

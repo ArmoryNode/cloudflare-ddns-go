@@ -121,14 +121,12 @@ func (cc CloudflareClient) VerifyDnsRecord(done chan bool) bool {
 	return response.Success
 }
 
-func (cc CloudflareClient) UpdateRecord() {
+func (cc CloudflareClient) UpdateRecord() string {
 	ipv4 := getPublicIPv4()
 	client := &http.Client{}
 
 	if ipv4 == currentIPv4 {
-		fmt.Printf("\n%s\rIP Address unchanged. Last updated: %s", cli.CLEAR_LINE, lastUpdated)
-		fmt.Print(cli.UP_LINE)
-		return
+		return fmt.Sprintf("\n%s\rIP Address unchanged. Last updated: %s%s", cli.CLEAR_LINE, lastUpdated, cli.UP_LINE)
 	}
 
 	data, err := json.Marshal(map[string]interface{}{
@@ -154,12 +152,11 @@ func (cc CloudflareClient) UpdateRecord() {
 	if resp.StatusCode == http.StatusOK {
 		currentIPv4 = ipv4
 		lastUpdated = time.Now().Format(time.RFC1123)
-		fmt.Printf("\n\rLast Updated: %s", lastUpdated)
-		fmt.Print(cli.UP_LINE)
+		return fmt.Sprintf("\n\rLast Updated: %s%s", lastUpdated, cli.UP_LINE)
 	} else {
 		fmt.Printf("Failed to update DNS record (status code: %d)", resp.StatusCode)
 		b, _ := io.ReadAll(resp.Body)
-		fmt.Print(string(b))
+		return fmt.Sprint(string(b))
 	}
 }
 

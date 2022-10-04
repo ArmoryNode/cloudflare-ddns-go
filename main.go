@@ -3,22 +3,27 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/ArmoryNode/cloudflare-ddns/cli"
 	"github.com/ArmoryNode/cloudflare-ddns/cloudflare"
 )
 
-const version = "1.0.0"
+const version = "1.0.2"
 
 // Used as an indicator that the application is running
 var spinner = [4]rune{'|', '\\', '-', '/'}
 
+var logo string = ""
+
 func main() {
 	// Hide the cursor in the console
 	fmt.Print(cli.HIDE_CURSOR)
+	fmt.Print(cli.COLOR_GREEN)
+	fmt.Print(cli.CLEAR_SCREEN)
 
-	printLogo()
+	printFrame()
 
 	apiTokenPtr := flag.String("apiToken", "", "Your API token from Cloudflare")
 	zoneIdentifierPtr := flag.String("zoneIdentifier", "", "The identifier for your zone (domain)")
@@ -47,8 +52,6 @@ func main() {
 
 	go cli.DisplaySpinner("Verifying Cloudflare API token", done)
 	verified := cloudflareClient.VerifyApiToken(done)
-
-	fmt.Print(cli.COLOR_GREEN)
 
 	if verified {
 		fmt.Print(cli.CLEAR_LINE)
@@ -85,18 +88,19 @@ func main() {
 
 	close(done)
 
-	fmt.Println()
-
 	// Make a channel for signaling an update
 	update := make(chan bool)
 
-	cloudflareClient.UpdateRecord()
+	str := cloudflareClient.UpdateRecord()
+	fmt.Print(cli.CLEAR_SCREEN)
+	printFrame(str)
 
 	go countdown(cloudflareClient.UpdateIntervalInMinutes, update)
 
 	for {
 		<-update
-		cloudflareClient.UpdateRecord()
+		str := cloudflareClient.UpdateRecord()
+		printFrame(str)
 	}
 }
 
@@ -104,8 +108,7 @@ func countdown(minutes int, update chan bool) {
 	secondsFrom := minutes * 60
 	for {
 		if secondsFrom >= 0 {
-			fmt.Print(cli.CLEAR_LINE)
-			fmt.Printf("\r[%c] Updating in %s", spinner[secondsFrom%4], getTimeFromSeconds(secondsFrom))
+			printFrame(fmt.Sprintf("[%c] Updating in %s", spinner[secondsFrom%4], getTimeFromSeconds(secondsFrom)))
 			secondsFrom--
 			time.Sleep(time.Second)
 		} else {
@@ -128,20 +131,24 @@ func getTimeFromSeconds(seconds int) string {
 	}
 }
 
-func printLogo() {
-	logo := `
-   ________                ________              
-  / ____/ /___  __  ______/ / __/ /___  ________ 
- / /   / / __ \/ / / / __  / /_/ / __ \/ ___/ _ \
-/ /___/ / /_/ / /_/ / /_/ / __/ / /_/ / /  /  __/
-\____/_/\____/\__,_/\__,_/_/ /_/\__,_/_/   \___/ 
-    ____  ____  _   _______                      
-   / __ \/ __ \/ | / / ___/                      
-  / / / / / / /  |/ /\__ \                       
- / /_/ / /_/ / /|  /___/ /                       
-/_____/_____/_/ |_//____/ v%s                        
-					
-	`
+func getLogo() string {
+	if logo == "" {
+		content, _ := os.ReadFile("logo.txt")
+		logo = string(content)
+	}
 
-	fmt.Printf(logo+"\n", version)
+	return fmt.Sprintf(logo+"\tv%s\n\n", version)
+}
+
+func printFrame(additionalLines ...string) {
+	str := ""
+
+	str += fmt.Sprint(cli.MOVE_CURSOR_HOME)
+	str += fmt.Sprint(getLogo())
+
+	for i := 0; i < len(additionalLines); i++ {
+		str += fmt.Sprint(additionalLines[i])
+	}
+
+	fmt.Print(str)
 }
